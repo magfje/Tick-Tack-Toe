@@ -5,90 +5,104 @@ namespace Tick_Tack_Toe;
 
 internal class Program
 {
-    private static void Main(string[] args)
+    private static void Main()
     {
         OutputEncoding = Encoding.UTF8;
 
-        //Make more dynamic with nested loop?
-        var square00 = new Square(0, 0, true, null);
-        var square01 = new Square(6, 0, false, null);
-        var square02 = new Square(12, 0, false, null);
-        var square10 = new Square(0, 3, false, null);
-        var square11 = new Square(6, 3, false, null);
-        var square12 = new Square(12, 3, false, null);
-        var square20 = new Square(0, 6, false, null);
-        var square21 = new Square(6, 6, false, null);
-        var square22 = new Square(12, 6, false, null);
+        var squareList = new List<Square>();
 
-        var array = new Square[3, 3]
+        for (var i = 0; i < 9; i++)
         {
-            { square00, square01, square02 },
-            { square10, square11, square12 },
-            { square20, square21, square22 }
-        };
-        var x = 0;
-        var y = 0;
+            var xPos = i switch
+            {
+                1 or 4 or 7 => 6,
+                2 or 5 or 8 => 12,
+                _ => 0
+            };
+
+            var yPos = i switch
+            {
+                < 3 => 0,
+                < 6 => 3,
+                _ => 6
+            };
+
+            var isSel = i == 0;
+
+            var square = new Square(xPos, yPos, isSel);
+            squareList.Add(square);
+        }
+
+        var gameOver = false;
+        var selectedIndex = 0;
+
         ConsoleKey keyPressed;
         do
         {
-            foreach (var a in array)
-            {
-                a.Draw();
-                a.IsSelected = false;
-            }
+            if (!gameOver)
+                foreach (var a in squareList)
+                {
+                    a.Draw();
+                    a.IsSelected = false;
+                }
+            else
+                WriteLine("Game OVer!");
 
-            //DisplayOptions();
             var keyInfo = ReadKey(true);
             keyPressed = keyInfo.Key;
 
-            //update SelectedIndex based on arrow keys
             if (keyPressed == ConsoleKey.LeftArrow)
             {
-                x--;
-                if (x == -1) x = 2;
+                if (selectedIndex == 0) selectedIndex = 2;
+                else if (selectedIndex == 3) selectedIndex = 5;
+                else if (selectedIndex == 6) selectedIndex = 8;
+                else selectedIndex -= 1;
             }
             else if (keyPressed == ConsoleKey.RightArrow)
             {
-                x++;
-                if (x == 3) x = 0;
+                if (selectedIndex == 2) selectedIndex = 0;
+                else if (selectedIndex == 5) selectedIndex = 3;
+                else if (selectedIndex == 8) selectedIndex = 6;
+                else selectedIndex++;
             }
             else if (keyPressed == ConsoleKey.UpArrow)
             {
-                y--;
-                if (y == -1) y = 2;
+                if (selectedIndex == 0) selectedIndex = 6;
+                else if (selectedIndex == 1) selectedIndex = 7;
+                else if (selectedIndex == 2) selectedIndex = 8;
+                else selectedIndex -= 3;
             }
             else if (keyPressed == ConsoleKey.DownArrow)
             {
-                y++;
-                if (y == 3) y = 0;
+                if (selectedIndex == 8) selectedIndex = 2;
+                else if (selectedIndex == 7) selectedIndex = 1;
+                else if (selectedIndex == 6) selectedIndex = 0;
+                else selectedIndex += 3;
             }
             else if (keyPressed == ConsoleKey.Enter)
             {
-                array[y, x].UserPick();
-                BotPicker();
-            }
-            else if (keyPressed == ConsoleKey.M)
-            {
-                array[y, x].BotPick();
+                squareList[selectedIndex].UserPick();
+                if (!squareList.Exists(x => x.IsUser == null)) gameOver = true;
+                if (!gameOver) BotPicker();
             }
 
-            if (array[y, x].IsSelected == false)
-                array[y, x].IsSelected = true;
-            //else
-            //    array[y, x].IsSelected = false;
-
+            squareList[selectedIndex].IsSelected = true;
             Clear();
         } while (keyPressed != ConsoleKey.Escape);
 
         void BotPicker()
         {
-            var y = new Random().Next(0, 2);
-            var x = new Random().Next(0, 2);
-            if (array[y, x].IsUser == null) array[y, x].BotPick();
+            while (true)
+            {
+                var randInd = new Random().Next(0, 8);
+                if (squareList[randInd].IsUser == null)
+                    squareList[randInd].BotPick();
+                else
+                    continue;
+                break;
+            }
         }
-        //var a = new Square(0, 1, false, null);
-        //a.Draw();
-        //var b = new Square(6, 1, false, null);
-        //b.Draw();
     }
 }
+
+//TODO: add winchecks

@@ -4,14 +4,14 @@ using static Console;
 
 public class Square
 {
-    public Square(int x, int y, bool isSelected, bool? isUser)
+    public Square(int x, int y, bool isSelected)
     {
         X = x;
         Y = y;
         IsSelected = isSelected;
-        IsUser = isUser;
     }
 
+    //TODO Gjør mer innkapsling
     public int X { get; set; }
     public int Y { get; set; }
     public bool IsSelected { get; set; }
@@ -19,7 +19,7 @@ public class Square
 
     public void Draw()
     {
-        var sqXorO = IsUser switch
+        var pick = IsUser switch
         {
             null => "  ",
             true => "👻",
@@ -27,11 +27,9 @@ public class Square
         };
 
         const string sqTop = "┌────┐";
-        var sqMid = $"│ {sqXorO} │";
         const string sqBot = "└────┘";
+        var sqMid = $"│ {pick} │";
 
-
-        //string[] sq = { "┌─────┐", "│     │", "│     │", "└─────┘" };
         string[] sq = { sqTop, sqMid, sqBot };
 
 
