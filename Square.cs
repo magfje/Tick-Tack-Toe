@@ -11,9 +11,8 @@ public class Square
         IsSelected = isSelected;
     }
 
-    //TODO Gjør mer innkapsling
-    public int X { get; set; }
-    public int Y { get; set; }
+    private int X { get; }
+    private int Y { get; }
     public bool IsSelected { get; set; }
     public bool? IsUser { get; set; }
 
