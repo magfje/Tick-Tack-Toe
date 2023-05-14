@@ -75,22 +75,22 @@ public class Board
 
         if (_keyPressed == ConsoleKey.LeftArrow)
         {
-            if (_selectedIndex is 0 or 3 or 6) _selectedIndex += 2;
+            if (_selectedIndex % 3 == 0) _selectedIndex += 2;
             else _selectedIndex -= 1;
         }
         else if (_keyPressed == ConsoleKey.RightArrow)
         {
-            if (_selectedIndex is 2 or 5 or 8) _selectedIndex -= 2;
+            if ((_selectedIndex + 1) % 3 == 0) _selectedIndex -= 2;
             else _selectedIndex++;
         }
         else if (_keyPressed == ConsoleKey.UpArrow)
         {
-            if (_selectedIndex is 0 or 1 or 2) _selectedIndex += 6;
+            if (_selectedIndex < 3) _selectedIndex += 6;
             else _selectedIndex -= 3;
         }
         else if (_keyPressed == ConsoleKey.DownArrow)
         {
-            if (_selectedIndex is 6 or 7 or 8) _selectedIndex -= 6;
+            if (_selectedIndex >= 6) _selectedIndex -= 6;
             else _selectedIndex += 3;
         }
         else if (_keyPressed == ConsoleKey.Enter && _squareList[_selectedIndex].IsUser == null)
@@ -139,6 +139,7 @@ public class Board
                     false => 2
                 };
 
+        //Diagonal
         if (_squareList[0].IsUser != null
             && _squareList[0].IsUser == _squareList[4].IsUser
             && _squareList[4].IsUser == _squareList[8].IsUser)
